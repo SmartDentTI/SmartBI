@@ -333,9 +333,11 @@ function closeSb() {
 }
 
 /* ── ESCALADO AUTOMÁTICO DEL IFRAME ────────────────────────── */
-const PBI_W   = 1024;
-const TOP_BAR = 36; /* barra superior PBI en px de PBI */
-const BOT_BAR = 42; /* barra inferior PBI en px de PBI */
+const PBI_W        = 1024;
+const PBI_H        = 1060; /* alto del reporte en px de PBI */
+const TOP_BAR      = 36;   /* barra superior PBI */
+const BOT_BAR      = 42;   /* barra inferior PBI */
+const PBI_CONTENT  = PBI_H - TOP_BAR - BOT_BAR; /* contenido real: 982px */
 
 function ajustarIframe() {
   const wrap   = document.getElementById('iframe-wrap');
@@ -344,21 +346,19 @@ function ajustarIframe() {
   const frame  = Array.from(frames).find(f => f.style.display !== 'none') || frames[0];
   if (!frame) return;
 
-  const W     = wrap.clientWidth;
-  const H     = wrap.clientHeight;
-  const scale = W / PBI_W;
+  const W = wrap.clientWidth;
+  const H = wrap.clientHeight;
 
-  /* altura total del iframe: contenido visible + ambas barras */
-  const pbiH  = Math.ceil(H / scale) + TOP_BAR + BOT_BAR;
+  /* escalar para que todo el reporte quepa (ancho Y alto) */
+  const scaleW = W / PBI_W;
+  const scaleH = H / PBI_CONTENT;
+  const scale  = Math.min(scaleW, scaleH) * 0.99;
 
   frame.style.width     = PBI_W + 'px';
-  frame.style.height    = pbiH + 'px';
-  /* translateY mueve el iframe hacia arriba para ocultar la barra superior,
-     luego scale lo escala al ancho disponible */
-  frame.style.transform = 'translateY(' + (-Math.ceil(TOP_BAR * scale)) + 'px) scale(' + scale + ')';
+  frame.style.height    = PBI_H + 'px';
+  frame.style.transform = 'translateY(' + (-Math.round(TOP_BAR * scale)) + 'px) scale(' + scale + ')';
   frame.style.transformOrigin = 'top left';
 
-  /* el cover ya no hace falta con este enfoque */
   if (cover) cover.style.display = 'none';
 }
 
