@@ -270,7 +270,7 @@ body {
       </div>
     </div>
     <div class="iframe-wrap" id="iframe-wrap">
-      <div style="height:10px;background:#fff;flex-shrink:0"></div>
+      <div style="height:40px;background:#fff;flex-shrink:0"></div>
       {% for r in reportes %}
       <iframe
         id="frame-{{ r.id }}"
@@ -328,7 +328,8 @@ function closeSb() {
 /* ── ESCALADO AUTOMÁTICO DEL IFRAME ────────────────────────── */
 const PBI_W   = 1024;
 const PBI_H   = 1060;
-const TOP_BAR = 36; /* barra superior PBI que ocultamos */
+const TOP_BAR = 36; /* barra superior PBI */
+const BOT_CUT = 78; /* recorta barra inferior + espacio vacío de fondo */
 
 function ajustarIframe() {
   const wrap   = document.getElementById('iframe-wrap');
@@ -340,9 +341,8 @@ function ajustarIframe() {
   const scale = W / PBI_W;
 
   frame.style.width     = PBI_W + 'px';
-  frame.style.height    = PBI_H + 'px';
+  frame.style.height    = (PBI_H - BOT_CUT) + 'px';
   frame.style.zoom      = String(scale);
-  /* la barra PBI mide TOP_BAR*scale px visualmente; margin-top en espacio del padre = esos mismos px */
   frame.style.marginTop = '-' + Math.round(TOP_BAR * scale) + 'px';
   frame.style.transform = 'none';
 }
