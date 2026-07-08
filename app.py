@@ -60,6 +60,14 @@ def logout():
     session.clear()
     return redirect(PORTAL_URL)
 
+REPORTES = [
+    {
+        "id":     "dashboard",
+        "nombre": "Dashboard",
+        "url":    "https://app.powerbi.com/view?r=eyJrIjoiY2UzZmFhZGYtZDYwZS00MjE2LWFmNzAtNDZhNjQ2ODQ1MDVkIiwidCI6IjdlNmNmZjIwLWM1OTEtNGRkMy05NDJhLWJiNTc5OWY4OTFmMSJ9&pageName=0db1d61e7afaccd70b04",
+    },
+]
+
 @app.route("/")
 @login_required
 def home():
@@ -67,7 +75,8 @@ def home():
         usuario=session.get("nombre"),
         username=session.get("user"),
         rol=session.get("rol"),
-        sucursal=session.get("sucursal", "")
+        sucursal=session.get("sucursal", ""),
+        reportes=REPORTES,
     )
 
 if __name__ == "__main__":
