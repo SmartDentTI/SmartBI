@@ -82,23 +82,16 @@ body {
 
 /* ── CONTENT ──────────────────────────────────────────── */
 .ct {
-  flex: 1; overflow: hidden; background: var(--bg);
+  flex: 1; background: var(--bg);
   height: 100vh; display: flex; flex-direction: column;
 }
 
 /* ── IFRAMES ──────────────────────────────────────────── */
 .iframe-wrap {
-  flex: 1; overflow: hidden; position: relative;
+  flex: 1; overflow-x: hidden; overflow-y: auto; position: relative;
 }
 .iframe-wrap iframe {
   border: none; display: block;
-  transform-origin: top left;
-  /* width / height / transform se calculan en JS */
-}
-.pbi-top-cover {
-  position: absolute; top: 0; left: 0; right: 0;
-  background: #ffffff; z-index: 5; pointer-events: none;
-  /* height se ajusta en JS según la escala */
 }
 
 /* ── BOTÓN PANTALLA COMPLETA ──────────────────────────── */
@@ -277,7 +270,6 @@ body {
       </div>
     </div>
     <div class="iframe-wrap" id="iframe-wrap">
-      <div class="pbi-top-cover"></div>
       {% for r in reportes %}
       <iframe
         id="frame-{{ r.id }}"
@@ -333,33 +325,24 @@ function closeSb() {
 }
 
 /* ── ESCALADO AUTOMÁTICO DEL IFRAME ────────────────────────── */
-const PBI_W        = 1024;
-const PBI_H        = 1060; /* alto del reporte en px de PBI */
-const TOP_BAR      = 36;   /* barra superior PBI */
-const BOT_BAR      = 42;   /* barra inferior PBI */
-const PBI_CONTENT  = PBI_H - TOP_BAR - BOT_BAR; /* contenido real: 982px */
+const PBI_W   = 1024;
+const PBI_H   = 1060;
+const TOP_BAR = 36; /* barra superior PBI que ocultamos */
 
 function ajustarIframe() {
   const wrap   = document.getElementById('iframe-wrap');
-  const cover  = document.querySelector('.pbi-top-cover');
   const frames = wrap.querySelectorAll('iframe');
   const frame  = Array.from(frames).find(f => f.style.display !== 'none') || frames[0];
   if (!frame) return;
 
-  const W = wrap.clientWidth;
-  const H = wrap.clientHeight;
-
-  /* escalar para que todo el reporte quepa (ancho Y alto) */
-  const scaleW = W / PBI_W;
-  const scaleH = H / PBI_CONTENT;
-  const scale  = Math.min(scaleW, scaleH) * 0.99;
+  const W     = wrap.clientWidth;
+  const scale = W / PBI_W;
 
   frame.style.width     = PBI_W + 'px';
   frame.style.height    = PBI_H + 'px';
-  frame.style.transform = 'translateY(' + (-Math.round(TOP_BAR * scale)) + 'px) scale(' + scale + ')';
-  frame.style.transformOrigin = 'top left';
-
-  if (cover) cover.style.display = 'none';
+  frame.style.zoom      = String(scale);      /* zoom afecta el layout → scroll funciona */
+  frame.style.marginTop = '-' + TOP_BAR + 'px'; /* oculta la barra superior de PBI */
+  frame.style.transform = 'none';
 }
 
 window.addEventListener('resize', ajustarIframe);
