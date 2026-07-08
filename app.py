@@ -63,7 +63,7 @@ def logout():
 REPORTES = [
     {
         "id":     "dashboard",
-        "nombre": "Dashboard",
+        "nombre": "Resumen",
         "url":    "https://app.powerbi.com/view?r=eyJrIjoiY2UzZmFhZGYtZDYwZS00MjE2LWFmNzAtNDZhNjQ2ODQ1MDVkIiwidCI6IjdlNmNmZjIwLWM1OTEtNGRkMy05NDJhLWJiNTc5OWY4OTFmMSJ9&pageName=0db1d61e7afaccd70b04",
     },
 ]
