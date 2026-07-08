@@ -338,7 +338,7 @@ function ajustarIframe() {
   if (!frame) return;
 
   const W     = wrap.clientWidth;
-  const scale = W / PBI_W;
+  const scale = Math.min(W / PBI_W, 1); /* nunca ampliar más allá del tamaño natural */
 
   frame.style.width     = PBI_W + 'px';
   frame.style.height    = (PBI_H - BOT_CUT) + 'px';
