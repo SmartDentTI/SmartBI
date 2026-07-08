@@ -1,7 +1,6 @@
-import os, hashlib, traceback
+import os, hmac, hashlib, base64, json, time
 from functools import wraps
 from flask import Flask, render_template, request, jsonify, session, redirect
-import psycopg2
 
 app = Flask(__name__, static_folder='static')
 app.secret_key = os.environ.get("SECRET_KEY", "smartbi-dev-key")
@@ -13,34 +12,23 @@ app.config["PERMANENT_SESSION_LIFETIME"] = 900
 def make_session_non_permanent():
     session.permanent = False
 
-DB_CONFIG = {
-    "host":     os.environ.get("DB_HOST",     "localhost"),
-    "database": os.environ.get("DB_NAME",     "railway"),
-    "user":     os.environ.get("DB_USER",     "postgres"),
-    "password": os.environ.get("DB_PASSWORD", ""),
-    "port":     os.environ.get("DB_PORT",     "5432"),
-}
+APP_ID     = "smartbi"
+SSO_SECRET = os.environ.get("SSO_SECRET", "smartapps-sso-dev-2026")
+PORTAL_URL = os.environ.get("PORTAL_URL", "https://smartapps-production.up.railway.app")
 
-def get_conn():
-    return psycopg2.connect(**DB_CONFIG)
-
-def hash_pwd(pwd):
-    return hashlib.sha256(pwd.encode()).hexdigest()
-
-APP_ID = 'smartbi'
-
-def get_user(username):
+def verify_sso_token(token, max_age=90):
     try:
-        conn = get_conn(); cur = conn.cursor()
-        cur.execute(
-            "SELECT username, nombre, rol, pwd, activo, sucursal FROM usuarios WHERE username = %s",
-            (username,)
-        )
-        row = cur.fetchone(); conn.close()
-        if not row: return None
-        return {"username": row[0], "nombre": row[1], "rol": row[2],
-                "pwd": row[3], "activo": row[4], "sucursal": row[5]}
-    except:
+        payload_b64, sig = token.rsplit(".", 1)
+        expected = hmac.new(SSO_SECRET.encode(), payload_b64.encode(), hashlib.sha256).hexdigest()
+        if not hmac.compare_digest(sig, expected):
+            return None
+        payload = json.loads(base64.urlsafe_b64decode(payload_b64).decode())
+        if payload.get("a") != APP_ID:
+            return None
+        if int(time.time()) - payload.get("t", 0) > max_age:
+            return None
+        return payload
+    except Exception:
         return None
 
 def login_required(f):
@@ -49,51 +37,28 @@ def login_required(f):
         if "user" not in session:
             if request.is_json:
                 return jsonify({"ok": False, "msg": "No autenticado"}), 401
-            return redirect("/login")
+            return redirect(PORTAL_URL)
         return f(*args, **kwargs)
     return decorated
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/auth")
+def sso_auth():
+    token   = request.args.get("token", "")
+    payload = verify_sso_token(token)
+    if not payload:
+        return redirect(PORTAL_URL)
+    session.update({"user": payload["u"], "nombre": payload["n"],
+                    "rol": payload["r"], "sucursal": payload["s"]})
+    return redirect("/")
+
+@app.route("/login")
 def login():
-    if request.method == "GET":
-        if "user" in session:
-            return redirect("/")
-        return render_template("login.html")
-
-    data     = request.json or {}
-    username = data.get("username", "").strip()
-    pwd      = data.get("password", "")
-    user     = get_user(username)
-
-    if not user or not user["activo"]:
-        return jsonify({"ok": False, "msg": "Usuario no encontrado o inactivo"}), 401
-    if user["pwd"] != hash_pwd(pwd):
-        return jsonify({"ok": False, "msg": "Contraseña incorrecta"}), 401
-
-    try:
-        conn = get_conn(); cur = conn.cursor()
-        cur.execute(
-            "SELECT 1 FROM app_accesos WHERE username = %s AND app = %s",
-            (username, APP_ID)
-        )
-        tiene_acceso = cur.fetchone()
-        conn.close()
-    except:
-        tiene_acceso = None
-
-    if not tiene_acceso:
-        return jsonify({"ok": False, "msg": "No tienes acceso a esta aplicación"}), 403
-
-    session["user"]     = user["username"]
-    session["nombre"]   = user["nombre"]
-    session["rol"]      = user["rol"]
-    session["sucursal"] = user["sucursal"] or ""
-    return jsonify({"ok": True})
+    return redirect(PORTAL_URL)
 
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect("/login")
+    return redirect(PORTAL_URL)
 
 @app.route("/")
 @login_required
