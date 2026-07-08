@@ -96,6 +96,42 @@ body {
   border: none; display: block;
 }
 
+/* ── BOTÓN PANTALLA COMPLETA ──────────────────────────── */
+.btn-fullscreen {
+  display: flex; align-items: center; gap: 6px;
+  margin: 0 4px 4px; padding: 7px 9px;
+  border-radius: 8px; cursor: pointer; border: none;
+  background: var(--ac-bg); color: var(--ac);
+  font-family: "Inter", sans-serif; font-size: 12px; font-weight: 600;
+  transition: background .1s; width: calc(100% - 8px);
+}
+.btn-fullscreen:hover { background: #d0e6fa; }
+
+/* ── CARD MÓVIL (portrait) ────────────────────────────── */
+.mobile-card {
+  display: none;
+  flex: 1; align-items: center; justify-content: center;
+  padding: 32px 24px; flex-direction: column; gap: 20px; text-align: center;
+}
+.mobile-card-icon {
+  width: 64px; height: 64px; border-radius: 16px;
+  background: linear-gradient(150deg, #0071e3, #34aadc);
+  display: flex; align-items: center; justify-content: center;
+}
+.mobile-card-title { font-size: 18px; font-weight: 700; color: var(--dark); }
+.mobile-card-sub   { font-size: 13px; color: var(--mid); line-height: 1.5; }
+.mobile-card-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 24px; background: var(--ac); color: #fff;
+  border: none; border-radius: 12px; font-size: 14px; font-weight: 600;
+  font-family: "Inter", sans-serif; cursor: pointer; transition: background .15s;
+}
+.mobile-card-btn:hover { background: #005fcc; }
+.mobile-rotate {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--mid);
+}
+
 /* ── HAMBURGER / MOBILE ───────────────────────────────── */
 .hbtn {
   display: none; position: fixed; top: 12px; left: 12px; z-index: 200;
@@ -117,6 +153,12 @@ body {
   .sb.open { transform: translateX(0); }
   .ct { width: 100%; height: 100vh; }
   .iframe-wrap { height: 100vh; }
+}
+
+/* portrait móvil: ocultar iframe, mostrar card */
+@media(max-width: 600px) and (orientation: portrait) {
+  .iframe-wrap { display: none; }
+  .mobile-card { display: flex; }
 }
 </style>
 </head>
@@ -153,7 +195,7 @@ body {
 
     <div class="sb-sec">Reportes</div>
     {% for r in reportes %}
-    <div class="sb-item {% if loop.first %}on{% endif %}" id="ni-{{ r.id }}" onclick="verReporte('{{ r.id }}', '{{ r.url }}', this)">
+    <div class="sb-item {% if loop.first %}on{% endif %}" id="ni-{{ r.id }}" onclick="verReporte('{{ r.id }}', '{{ r.url }}', '{{ r.nombre }}', this)">
       <div class="sb-ico">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0071e3" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="20" x2="18" y2="10"/>
@@ -164,6 +206,16 @@ body {
       {{ r.nombre }}
     </div>
     {% endfor %}
+
+    <div style="padding: 8px 4px 0;">
+      <button class="btn-fullscreen" id="btn-fs" onclick="abrirFullscreen()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+          <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+        </svg>
+        Abrir en pantalla completa
+      </button>
+    </div>
 
     <div class="sb-bot">
       <div class="sb-urow">
@@ -193,6 +245,32 @@ body {
 
   <!-- CONTENT -->
   <div class="ct">
+    <div class="mobile-card" id="mobile-card">
+      <div class="mobile-card-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"/>
+          <line x1="12" y1="20" x2="12" y2="4"/>
+          <line x1="6"  y1="20" x2="6"  y2="14"/>
+        </svg>
+      </div>
+      <div>
+        <div class="mobile-card-title" id="mc-titulo">Resumen</div>
+        <div class="mobile-card-sub">El reporte se ve mejor en pantalla completa o girando el teléfono.</div>
+      </div>
+      <button class="mobile-card-btn" id="mc-btn" onclick="abrirFullscreen()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+          <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+        </svg>
+        Abrir en pantalla completa
+      </button>
+      <div class="mobile-rotate">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+        O gira el teléfono para verlo aquí
+      </div>
+    </div>
     <div class="iframe-wrap" id="iframe-wrap">
       {% for r in reportes %}
       <iframe
@@ -218,13 +296,23 @@ document.getElementById('sb-user-name').textContent     = _nombre;
 document.getElementById('sb-user-sucursal').textContent = _sucursal || "SmartDent";
 
 /* ── NAVEGACIÓN REPORTES ────────────────────────────────────── */
-function verReporte(id, url, el) {
+let _urlActual = document.querySelector('.iframe-wrap iframe') ? document.querySelector('.iframe-wrap iframe').src : '';
+let _nombreActual = '{{ reportes[0].nombre }}';
+
+function verReporte(id, url, nombre, el) {
   document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('on'));
   el.classList.add('on');
   document.querySelectorAll('.iframe-wrap iframe').forEach(f => f.style.display = 'none');
   const frame = document.getElementById('frame-' + id);
   frame.style.display = 'block';
+  _urlActual = url;
+  _nombreActual = nombre;
+  document.getElementById('mc-titulo').textContent = nombre;
   closeSb();
+}
+
+function abrirFullscreen() {
+  window.open(_urlActual, '_blank');
 }
 
 /* ── MOBILE SIDEBAR ─────────────────────────────────────────── */
