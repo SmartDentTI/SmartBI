@@ -1,0 +1,2 @@
+-- SmartBI no requiere tablas propias.
+-- Usa las tablas compartidas: usuarios y app_accesos.
