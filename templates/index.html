@@ -15,16 +15,16 @@
 html { font-size: 14px; }
 body {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  background: var(--bg); color: var(--dark); height: 100dvh; overflow: hidden;
+  background: var(--bg); color: var(--dark); height: 100vh; overflow: hidden;
 }
-.app { height: 100dvh; display: flex; flex-direction: row; }
+.app { height: 100vh; display: flex; flex-direction: row; }
 
 /* ── SIDEBAR ──────────────────────────────────────────── */
 .sb {
   width: 210px; flex-shrink: 0;
   border-right: 0.5px solid rgba(0,0,0,0.08);
   background: rgba(255,255,255,0.72);
-  display: flex; flex-direction: column; height: 100dvh;
+  display: flex; flex-direction: column; height: 100vh;
 }
 .sb-top { padding: 16px 13px 12px; border-bottom: 0.5px solid rgba(0,0,0,0.07); }
 .sb-approw { display: flex; align-items: center; gap: 9px; }
@@ -83,7 +83,7 @@ body {
 /* ── CONTENT ──────────────────────────────────────────── */
 .ct {
   flex: 1; background: var(--bg);
-  height: 100dvh; display: flex; flex-direction: column;
+  height: 100vh; display: flex; flex-direction: column;
 }
 
 /* ── IFRAMES ──────────────────────────────────────────── */
@@ -142,15 +142,15 @@ body {
 
 @media(max-width: 1024px) {
   body { overflow: auto; }
-  .app { flex-direction: column; height: auto; min-height: 100dvh; }
+  .app { flex-direction: column; height: auto; min-height: 100vh; }
   .hbtn { display: flex; }
   .sb {
-    position: fixed; top: 0; left: 0; height: 100dvh; z-index: 100;
+    position: fixed; top: 0; left: 0; height: 100vh; z-index: 100;
     transform: translateX(-100%); transition: transform .25s ease; width: 240px;
   }
   .sb.open { transform: translateX(0); }
-  .ct { width: 100%; height: 100dvh; }
-  .iframe-wrap { height: 100dvh; }
+  .ct { width: 100%; height: 100vh; }
+  .iframe-wrap { height: 100vh; }
 }
 
 /* portrait móvil: ocultar iframe, mostrar card */
