@@ -140,7 +140,7 @@ body {
 .sb-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 99; }
 .sb-overlay.on { display: block; }
 
-@media(max-width: 768px) {
+@media(max-width: 1024px) {
   body { overflow: auto; }
   .app { flex-direction: column; height: auto; min-height: 100vh; }
   .hbtn { display: flex; }
@@ -340,8 +340,9 @@ function ajustarIframe() {
 
   frame.style.width     = PBI_W + 'px';
   frame.style.height    = PBI_H + 'px';
-  frame.style.zoom      = String(scale);      /* zoom afecta el layout → scroll funciona */
-  frame.style.marginTop = '-' + TOP_BAR + 'px'; /* oculta la barra superior de PBI */
+  frame.style.zoom      = String(scale);
+  /* la barra PBI mide TOP_BAR*scale px visualmente; margin-top en espacio del padre = esos mismos px */
+  frame.style.marginTop = '-' + Math.round(TOP_BAR * scale) + 'px';
   frame.style.transform = 'none';
 }
 
