@@ -95,6 +95,15 @@ body {
   height: calc(100% + 40px); /* esconde barra inferior PBI */
   border: none; display: block;
 }
+/* tapa la barra superior de Power BI con un div blanco */
+.pbi-top-cover {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 36px;
+  background: #ffffff;
+  z-index: 5;
+  pointer-events: none;
+}
 
 /* ── BOTÓN PANTALLA COMPLETA ──────────────────────────── */
 .btn-fullscreen {
@@ -272,6 +281,7 @@ body {
       </div>
     </div>
     <div class="iframe-wrap" id="iframe-wrap">
+      <div class="pbi-top-cover"></div>
       {% for r in reportes %}
       <iframe
         id="frame-{{ r.id }}"
