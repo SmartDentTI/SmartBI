@@ -92,8 +92,7 @@ body {
   background: #ffffff;
 }
 @media(min-width: 1025px) {
-  .iframe-wrap { flex: none; height: auto; overflow: visible; }
-  .ct { background: #ffffff; overflow-y: auto; }
+  .ct { background: #ffffff; }
 }
 .iframe-wrap iframe {
   border: none; display: block;
@@ -346,8 +345,11 @@ function ajustarIframe() {
   const H = wrap.clientHeight;
   const VISIBLE_H = PBI_H - BOT_CUT;
 
-  /* desktop: tamaño natural (máx 1); móvil/tablet: reducir para ajustar al ancho */
-  const scale = Math.min(W / PBI_W, 1);
+  /* desktop: llenar pantalla en ambas dimensiones; móvil: ajustar al ancho con scroll */
+  const VISIBLE_H = PBI_H - BOT_CUT;
+  const scale = window.innerWidth > 1024
+    ? Math.min(W / PBI_W, H / VISIBLE_H)
+    : W / PBI_W;
 
   frame.style.width     = PBI_W + 'px';
   frame.style.height    = VISIBLE_H + 'px';
