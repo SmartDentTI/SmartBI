@@ -282,7 +282,6 @@ body {
     <div class="iframe-wrap" id="iframe-wrap">
       <div style="height:60px;background:#fff;flex-shrink:0"></div>
       {% for r in reportes %}
-      <br>
       <div class="pbi-clip" id="clip-{{ r.id }}" style="{% if not loop.first %}display:none{% endif %}">
         <iframe
           id="frame-{{ r.id }}"
