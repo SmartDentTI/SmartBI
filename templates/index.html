@@ -351,7 +351,7 @@ function ajustarIframe() {
 
   if (window.innerWidth > 1024) {
     /* Desktop: transform no entra al iframe — PBI no altera su zoom interno */
-    const scale = Math.min(W / PBI_W, H / VISIBLE_H);
+    const scale = Math.min(W / PBI_W, H / VISIBLE_H) * 0.88;
     frame.style.zoom            = '1';
     frame.style.marginTop       = '0';
     frame.style.transform       = 'translateY(' + (-Math.round(TOP_BAR * scale)) + 'px) scale(' + scale + ')';
