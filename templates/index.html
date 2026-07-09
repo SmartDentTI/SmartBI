@@ -89,6 +89,7 @@ body {
 /* ── IFRAMES ──────────────────────────────────────────── */
 .iframe-wrap {
   flex: 1; overflow-x: hidden; overflow-y: auto; position: relative;
+  background: #ffffff;
 }
 .iframe-wrap iframe {
   border: none; display: block;
@@ -341,11 +342,8 @@ function ajustarIframe() {
   const H = wrap.clientHeight;
   const VISIBLE_H = PBI_H - BOT_CUT;
 
-  /* desktop (sidebar visible): ajustar a ambas dimensiones para llenar la pantalla
-     móvil/tablet: ajustar solo al ancho y permitir scroll vertical */
-  const scale = window.innerWidth > 1024
-    ? Math.min(W / PBI_W, H / VISIBLE_H)
-    : W / PBI_W;
+  /* desktop: tamaño natural (máx 1); móvil/tablet: reducir para ajustar al ancho */
+  const scale = Math.min(W / PBI_W, 1);
 
   frame.style.width     = PBI_W + 'px';
   frame.style.height    = VISIBLE_H + 'px';
