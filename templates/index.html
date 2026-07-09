@@ -365,6 +365,9 @@ function ajustarIframe() {
     frame.style.marginTop       = '-' + Math.round(TOP_BAR * scale) + 'px';
     frame.style.transform       = 'none';
     frame.style.transformOrigin = '';
+    /* limitar alto del contenedor al contenido visible — elimina scroll hacia espacio vacío */
+    const contentVH = Math.round((PBI_H - BOT_CUT - TOP_BAR) * scale) + 60;
+    wrap.style.height = contentVH + 'px';
   }
 }
 
