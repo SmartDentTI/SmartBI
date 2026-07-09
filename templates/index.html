@@ -91,6 +91,10 @@ body {
   flex: 1; overflow-x: hidden; overflow-y: auto; position: relative;
   background: #ffffff;
 }
+@media(min-width: 1025px) {
+  .iframe-wrap { flex: none; height: auto; overflow: visible; }
+  .ct { background: #ffffff; overflow-y: auto; }
+}
 .iframe-wrap iframe {
   border: none; display: block;
 }
@@ -330,7 +334,7 @@ function closeSb() {
 const PBI_W   = 1024;
 const PBI_H   = 1060;
 const TOP_BAR = 36; /* barra superior PBI */
-const BOT_CUT = 380; /* recorta barra inferior + espacio vacío de fondo */
+const BOT_CUT = 490; /* recorta barra inferior + espacio vacío de fondo */
 
 function ajustarIframe() {
   const wrap   = document.getElementById('iframe-wrap');
