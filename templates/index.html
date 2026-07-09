@@ -93,10 +93,14 @@ body {
 }
 @media(min-width: 1025px) {
   .ct { background: #ffffff; }
-  .iframe-wrap { overflow-y: hidden; } /* en desktop no scroll, el transform recorta el fondo */
+  .iframe-wrap { overflow-y: hidden; }
 }
 .iframe-wrap iframe {
   border: none; display: block;
+}
+/* clip wrapper — recorta la barra inferior de PBI por overflow:hidden real */
+.pbi-clip {
+  overflow: hidden; flex-shrink: 0;
 }
 
 /* ── BOTÓN PANTALLA COMPLETA ──────────────────────────── */
@@ -278,14 +282,15 @@ body {
     <div class="iframe-wrap" id="iframe-wrap">
       <div style="height:60px;background:#fff;flex-shrink:0"></div>
       {% for r in reportes %}
-      <iframe
-        id="frame-{{ r.id }}"
-        title="{{ r.nombre }}"
-        src="{{ r.url }}"
-        allowfullscreen="true"
-        loading="{% if loop.first %}eager{% else %}lazy{% endif %}"
-        style="{% if not loop.first %}display:none{% endif %}">
-      </iframe>
+      <div class="pbi-clip" id="clip-{{ r.id }}" style="{% if not loop.first %}display:none{% endif %}">
+        <iframe
+          id="frame-{{ r.id }}"
+          title="{{ r.nombre }}"
+          src="{{ r.url }}"
+          allowfullscreen="true"
+          loading="{% if loop.first %}eager{% else %}lazy{% endif %}">
+        </iframe>
+      </div>
       {% endfor %}
     </div>
   </div>
@@ -307,9 +312,8 @@ let _nombreActual = '{{ reportes[0].nombre }}';
 function verReporte(id, url, nombre, el) {
   document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('on'));
   el.classList.add('on');
-  document.querySelectorAll('.iframe-wrap iframe').forEach(f => f.style.display = 'none');
-  const frame = document.getElementById('frame-' + id);
-  frame.style.display = 'block';
+  document.querySelectorAll('.pbi-clip').forEach(c => c.style.display = 'none');
+  document.getElementById('clip-' + id).style.display = 'block';
   ajustarIframe();
   _urlActual = url;
   _nombreActual = nombre;
@@ -334,40 +338,63 @@ function closeSb() {
 /* ── ESCALADO AUTOMÁTICO DEL IFRAME ────────────────────────── */
 const PBI_W   = 1024;
 const PBI_H   = 1060;
-const TOP_BAR = 36; /* barra superior PBI */
-const BOT_CUT = 680; /* recorta barra inferior + espacio vacío de fondo */
+const TOP_BAR = 36;  /* barra superior PBI (px naturales) */
+const BOT_CUT = 400; /* px naturales del fondo que se recortan (barra PBI + espacio vacío) */
 
 function ajustarIframe() {
-  const wrap   = document.getElementById('iframe-wrap');
-  const frames = wrap.querySelectorAll('iframe');
-  const frame  = Array.from(frames).find(f => f.style.display !== 'none') || frames[0];
+  const wrap  = document.getElementById('iframe-wrap');
+  const clips = wrap.querySelectorAll('.pbi-clip');
+  const clip  = Array.from(clips).find(c => c.style.display !== 'none') || clips[0];
+  if (!clip) return;
+  const frame = clip.querySelector('iframe');
   if (!frame) return;
 
   const W         = wrap.clientWidth;
   const H         = wrap.clientHeight;
-  const VISIBLE_H = PBI_H - BOT_CUT;
+  /* alto visible en coords naturales del iframe, sin barra PBI ni TOP_BAR */
+  const CONTENT_H = PBI_H - BOT_CUT - TOP_BAR;
 
-  frame.style.width  = PBI_W + 'px';
-  frame.style.height = PBI_H + 'px';
+  /* iframe siempre a tamaño natural — el clip hace el recorte real */
+  frame.style.width     = PBI_W + 'px';
+  frame.style.height    = PBI_H + 'px';
+  frame.style.zoom      = '1';
+  frame.style.transform = 'none';
 
   const isDesktop = window.innerWidth > 1024 && !window.matchMedia('(pointer: coarse)').matches;
   if (isDesktop) {
-    /* Desktop (mouse): transform no entra al iframe — PBI no altera su zoom interno */
+    /* Desktop: transform en el FRAME (no entra al iframe, PBI no cambia su zoom interno).
+       El clip queda transparente (overflow visible) y el wrap (overflow:hidden) recorta. */
+    const VISIBLE_H = PBI_H - BOT_CUT;
     const scale = Math.min(W / PBI_W, H / VISIBLE_H) * 0.88;
-    frame.style.zoom            = '1';
-    frame.style.marginTop       = '0';
-    frame.style.transform       = 'translateY(' + (-Math.round(TOP_BAR * scale)) + 'px) scale(' + scale + ')';
+    clip.style.overflow      = 'visible';
+    clip.style.width         = '';
+    clip.style.height        = '';
+    clip.style.zoom          = '1';
+    clip.style.marginTop     = '0';
+    clip.style.transform     = 'none';
+    frame.style.marginTop    = '0';
     frame.style.transformOrigin = 'top left';
+    frame.style.transform    = 'translateY(' + (-Math.round(TOP_BAR * scale)) + 'px) scale(' + scale + ')';
+    wrap.style.flex          = '';
+    wrap.style.height        = '';
   } else {
-    /* Móvil/tablet (touch): zoom para que el scroll funcione correctamente */
+    /* Móvil/tablet (touch): zoom en el CLIP — el overflow:hidden del clip recorta la barra PBI.
+       El iframe dentro no ve zoom propio, PBI renderiza en tamaño natural. */
     const scale = W / PBI_W;
-    frame.style.zoom            = String(scale);
-    frame.style.marginTop       = '-' + Math.round(TOP_BAR * scale) + 'px';
-    frame.style.transform       = 'none';
-    frame.style.transformOrigin = '';
-    /* limitar alto del contenedor al contenido visible — elimina scroll hacia espacio vacío */
-    const contentVH = Math.round((PBI_H - BOT_CUT - TOP_BAR) * scale) + 60;
-    wrap.style.height = contentVH + 'px';
+    /* marginTop en coords naturales (sin escalar, porque zoom está en el padre clip) */
+    frame.style.marginTop = '-' + TOP_BAR + 'px';
+
+    clip.style.overflow  = 'hidden';
+    clip.style.width     = PBI_W + 'px';
+    clip.style.height    = CONTENT_H + 'px'; /* overflow:hidden recorta aquí */
+    clip.style.zoom      = String(scale);
+    clip.style.marginTop = '0';
+    clip.style.transform = 'none';
+
+    /* wrap: altura exacta = espaciador + clip visual → sin espacio vacío abajo */
+    const clipVisualH = Math.round(CONTENT_H * scale);
+    wrap.style.flex   = 'none';
+    wrap.style.height = (60 + clipVisualH) + 'px';
   }
 }
 
