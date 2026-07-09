@@ -145,7 +145,8 @@ body {
 .sb-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 99; }
 .sb-overlay.on { display: block; }
 
-@media(max-width: 1024px) {
+/* móvil por ancho O por dispositivo táctil (cubre phones landscape anchos) */
+@media(max-width: 1024px), (pointer: coarse) {
   body { overflow: auto; }
   .app { flex-direction: column; height: auto; min-height: 100vh; }
   .hbtn { display: flex; }
@@ -155,7 +156,7 @@ body {
   }
   .sb.open { transform: translateX(0); }
   .ct { width: 100%; height: 100vh; }
-  .iframe-wrap { height: 100vh; }
+  .iframe-wrap { height: 100vh; overflow-y: auto; }
 }
 
 /* portrait móvil: ocultar iframe, mostrar card */
@@ -349,15 +350,16 @@ function ajustarIframe() {
   frame.style.width  = PBI_W + 'px';
   frame.style.height = PBI_H + 'px';
 
-  if (window.innerWidth > 1024) {
-    /* Desktop: transform no entra al iframe — PBI no altera su zoom interno */
+  const isDesktop = window.innerWidth > 1024 && !window.matchMedia('(pointer: coarse)').matches;
+  if (isDesktop) {
+    /* Desktop (mouse): transform no entra al iframe — PBI no altera su zoom interno */
     const scale = Math.min(W / PBI_W, H / VISIBLE_H) * 0.88;
     frame.style.zoom            = '1';
     frame.style.marginTop       = '0';
     frame.style.transform       = 'translateY(' + (-Math.round(TOP_BAR * scale)) + 'px) scale(' + scale + ')';
     frame.style.transformOrigin = 'top left';
   } else {
-    /* Móvil/tablet: zoom para que el scroll funcione correctamente */
+    /* Móvil/tablet (touch): zoom para que el scroll funcione correctamente */
     const scale = W / PBI_W;
     frame.style.zoom            = String(scale);
     frame.style.marginTop       = '-' + Math.round(TOP_BAR * scale) + 'px';
