@@ -337,11 +337,18 @@ function ajustarIframe() {
   const frame  = Array.from(frames).find(f => f.style.display !== 'none') || frames[0];
   if (!frame) return;
 
-  const W     = wrap.clientWidth;
-  const scale = Math.min(W / PBI_W, 1); /* nunca ampliar más allá del tamaño natural */
+  const W = wrap.clientWidth;
+  const H = wrap.clientHeight;
+  const VISIBLE_H = PBI_H - BOT_CUT;
+
+  /* desktop (sidebar visible): ajustar a ambas dimensiones para llenar la pantalla
+     móvil/tablet: ajustar solo al ancho y permitir scroll vertical */
+  const scale = window.innerWidth > 1024
+    ? Math.min(W / PBI_W, H / VISIBLE_H)
+    : W / PBI_W;
 
   frame.style.width     = PBI_W + 'px';
-  frame.style.height    = (PBI_H - BOT_CUT) + 'px';
+  frame.style.height    = VISIBLE_H + 'px';
   frame.style.zoom      = String(scale);
   frame.style.marginTop = '-' + Math.round(TOP_BAR * scale) + 'px';
   frame.style.transform = 'none';
