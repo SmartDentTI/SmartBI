@@ -93,6 +93,7 @@ body {
 }
 @media(min-width: 1025px) {
   .ct { background: #ffffff; }
+  .iframe-wrap { overflow-y: hidden; } /* en desktop no scroll, el transform recorta el fondo */
 }
 .iframe-wrap iframe {
   border: none; display: block;
@@ -274,7 +275,7 @@ body {
       </div>
     </div>
     <div class="iframe-wrap" id="iframe-wrap">
-      <div style="height:40px;background:#fff;flex-shrink:0"></div>
+      <div style="height:60px;background:#fff;flex-shrink:0"></div>
       {% for r in reportes %}
       <iframe
         id="frame-{{ r.id }}"
