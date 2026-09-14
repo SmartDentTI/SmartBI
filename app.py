@@ -79,7 +79,12 @@ REPORTES = [
     {
         "id":     "proyeccion",
         "nombre": "Proyeccion",
-        "url":    "https://app.powerbi.com/view?r=eyJrIjoiMmQ4YTVhNTAtYmQ5Mi00ZGM5LThhYzYtOWM4NjcyNmNkNjRiIiwidCI6IjdlNmNmZjIwLWM1OTEtNGRkMy05NDJhLWJiNTc5OWY4OTFmMSJ9",
+        "url":    "https://app.powerbi.com/view?r=eyJrIjoiMmQ4YTVhNTAtYmQ5Mi00ZGM5LThhYzYtOWM4NjcyNmNkNjRiIiwidCI6IjdlNmNmZjIwLWM1OTEtNGRkMy05NDJhLWJiNTc5OWY4OTFmMSJ9&pageName=0e6ffd4fb6037189ada8",
+    },
+    {
+        "id":     "resumen-tablero",
+        "nombre": "Resumen Tablero",
+        "url":    "https://app.powerbi.com/view?r=eyJrIjoiMmQ4YTVhNTAtYmQ5Mi00ZGM5LThhYzYtOWM4NjcyNmNkNjRiIiwidCI6IjdlNmNmZjIwLWM1OTEtNGRkMy05NDJhLWJiNTc5OWY4OTFmMSJ9&pageName=102881be3d20b9bb908e",
     },
 ]
 
