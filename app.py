@@ -76,6 +76,11 @@ REPORTES = [
         "nombre": "Primeras",
         "url":    "https://app.powerbi.com/view?r=eyJrIjoiMmQ4YTVhNTAtYmQ5Mi00ZGM5LThhYzYtOWM4NjcyNmNkNjRiIiwidCI6IjdlNmNmZjIwLWM1OTEtNGRkMy05NDJhLWJiNTc5OWY4OTFmMSJ9&pageName=f32a51f4906bde34739e",
     },
+    {
+        "id":     "proyeccion",
+        "nombre": "Proyeccion",
+        "url":    "https://app.powerbi.com/view?r=eyJrIjoiMmQ4YTVhNTAtYmQ5Mi00ZGM5LThhYzYtOWM4NjcyNmNkNjRiIiwidCI6IjdlNmNmZjIwLWM1OTEtNGRkMy05NDJhLWJiNTc5OWY4OTFmMSJ9",
+    },
 ]
 
 @app.route("/")
