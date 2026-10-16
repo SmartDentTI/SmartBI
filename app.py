@@ -86,6 +86,11 @@ REPORTES = [
         "nombre": "Resumen Tablero",
         "url":    "https://app.powerbi.com/view?r=eyJrIjoiMmQ4YTVhNTAtYmQ5Mi00ZGM5LThhYzYtOWM4NjcyNmNkNjRiIiwidCI6IjdlNmNmZjIwLWM1OTEtNGRkMy05NDJhLWJiNTc5OWY4OTFmMSJ9&pageName=102881be3d20b9bb908e",
     },
+    {
+        "id":     "instalaciones",
+        "nombre": "Instalaciones",
+        "url":    "https://app.powerbi.com/reportEmbed?reportId=a70cad0f-2c49-41bd-a481-ab7112ae68f6&autoAuth=true&ctid=7e6cff20-c591-4dd3-942a-bb5799f891f1",
+    },
 ]
 
 @app.route("/")
