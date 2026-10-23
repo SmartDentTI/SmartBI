@@ -6,7 +6,7 @@ app = Flask(__name__, static_folder='static')
 app.secret_key = os.environ.get("SECRET_KEY", "smartbi-dev-key")
 app.config["SESSION_COOKIE_HTTPONLY"]  = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
-app.config["PERMANENT_SESSION_LIFETIME"] = 900
+app.config["PERMANENT_SESSION_LIFETIME"] = 1800
 
 @app.before_request
 def make_session_non_permanent():

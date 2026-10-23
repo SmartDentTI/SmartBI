@@ -401,11 +401,11 @@ function ajustarIframe() {
 window.addEventListener('resize', ajustarIframe);
 ajustarIframe();
 
-/* ── INACTIVIDAD 15 MIN ─────────────────────────────────────── */
+/* ── INACTIVIDAD 30 MIN ─────────────────────────────────────── */
 let _t;
 function resetTimer() {
   clearTimeout(_t);
-  _t = setTimeout(() => { window.location.href = "/logout"; }, 15 * 60 * 1000);
+  _t = setTimeout(() => { window.location.href = "/logout"; }, 30 * 60 * 1000);
 }
 ["mousemove","click","keydown","scroll","touchstart"].forEach(e => {
   document.addEventListener(e, resetTimer, true);
