@@ -407,10 +407,26 @@ function resetTimer() {
   clearTimeout(_t);
   _t = setTimeout(() => { window.location.href = "/logout"; }, 30 * 60 * 1000);
 }
+let _ultimaSenal = Date.now();
+function actividad() {
+  _ultimaSenal = Date.now();
+  resetTimer();
+}
 ["mousemove","click","keydown","scroll","touchstart"].forEach(e => {
-  document.addEventListener(e, resetTimer, true);
+  document.addEventListener(e, actividad, true);
 });
 resetTimer();
+
+/* Lo que pasa dentro del informe de Power BI no llega a esta página, así que con la
+   pestaña a la vista se considera en uso. Tope: 2 horas desde la última señal (90 min
+   aquí + los 30 del contador), para que un equipo abandonado se cierre igual. */
+const TOPE_A_LA_VISTA = 90 * 60 * 1000;
+window.addEventListener('blur', () => setTimeout(() => {
+  if (document.activeElement && document.activeElement.tagName === 'IFRAME') actividad();
+}, 0));
+setInterval(() => {
+  if (document.visibilityState === 'visible' && Date.now() - _ultimaSenal < TOPE_A_LA_VISTA) resetTimer();
+}, 30 * 1000);
 </script>
 </body>
 </html>
