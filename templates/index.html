@@ -171,6 +171,47 @@ body {
 </style>
 </head>
 <body>
+<div id="sd-splash" aria-hidden="true"><div class="sd-sw"><span class="sd-p sd-p1">Smart</span><span class="sd-p sd-p2">BI</span><span class="sd-ln"></span></div><div class="sd-tag">SmartDent</div></div>
+<style>
+/* Pantalla de carga SmartApps: el logo se arma a pantalla completa y se desvanece para mostrar la app.
+   Una vez por visita; se salta con un toque o una tecla; nunca con movimiento reducido. */
+#sd-splash{position:fixed;inset:0;z-index:2147483000;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:#fff;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;cursor:pointer}
+#sd-splash.sd-dark{background:#111214}
+#sd-splash .sd-sw{position:relative;font-size:44px;font-weight:700;letter-spacing:-.035em;line-height:1.1;white-space:nowrap}
+#sd-splash .sd-p{display:inline-block;opacity:0}
+#sd-splash .sd-p1{color:#2885F0;--sd-c:#2885F0}#sd-splash .sd-p2{color:#57CEF9;--sd-c:#57CEF9}
+#sd-splash .sd-ln{position:absolute;left:0;right:0;bottom:-.18em;height:4px;border-radius:2px;background:#2885F0;transform:scaleX(0);opacity:0}
+#sd-splash .sd-tag{margin-top:20px;font-size:14px;font-weight:500;color:#6e6e73;opacity:0}
+#sd-splash.sd-dark .sd-tag{color:#a1a1a6}
+#sd-splash.sd-run .sd-p{background:linear-gradient(100deg,var(--sd-c) 42%,#fff 50%,var(--sd-c) 58%) 120% 0/300% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+#sd-splash.sd-run .sd-p1{animation:sdL .62s cubic-bezier(.22,1,.36,1) both,sdSh .4s .6s linear both}
+#sd-splash.sd-run .sd-p2{animation:sdR .62s cubic-bezier(.22,1,.36,1) both,sdSh .4s .92s linear both}
+#sd-splash.sd-run .sd-ln{animation:sdLn .9s .5s cubic-bezier(.22,1,.36,1) both}
+#sd-splash.sd-run .sd-tag{animation:sdUp .4s .6s cubic-bezier(.22,1,.36,1) both}
+#sd-splash.sd-out{transition:opacity .45s cubic-bezier(.4,0,.2,1),visibility 0s .45s;opacity:0;visibility:hidden}
+#sd-splash.sd-out .sd-sw{transition:transform .45s cubic-bezier(.4,0,.2,1);transform:scale(1.04)}
+@media (max-width:480px){#sd-splash .sd-sw{font-size:34px}#sd-splash .sd-ln{height:3px}}
+@keyframes sdL{from{transform:translateX(-2em);opacity:0}to{transform:none;opacity:1}}
+@keyframes sdR{from{transform:translateX(2em);opacity:0}to{transform:none;opacity:1}}
+@keyframes sdSh{from{background-position:120% 0}to{background-position:-20% 0}}
+@keyframes sdLn{0%{transform:scaleX(0);opacity:1}55%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1);opacity:0}}
+@keyframes sdUp{from{transform:translateY(6px);opacity:0}to{transform:none;opacity:1}}
+</style>
+<script>(function(){
+  var s=document.getElementById('sd-splash');if(!s)return;
+  var visto=false;try{visto=!!sessionStorage.getItem('sd-splash');sessionStorage.setItem('sd-splash','1');}catch(e){}
+  var quieto=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(visto||quieto){s.remove();return;}
+  if(document.documentElement.getAttribute('data-theme')==='dark')s.classList.add('sd-dark');
+  s.classList.add('sd-run');
+  var fin=false;
+  function salir(){if(fin)return;fin=true;s.classList.add('sd-out');setTimeout(function(){s.remove();},500);
+    document.removeEventListener('keydown',salir,true);}
+  s.addEventListener('click',salir);document.addEventListener('keydown',salir,true);
+  setTimeout(salir,1550);
+})();</script>
 
 <button class="hbtn" onclick="toggleSb()" aria-label="Menu">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1d1d1f" stroke-width="2.2">
