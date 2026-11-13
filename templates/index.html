@@ -169,6 +169,11 @@ body {
   .mobile-card { display: flex; }
 }
 </style>
+<style>
+/* Logo de la app: Smart + nombre en los dos tonos del icono */
+.sb-appname{font-weight:700;letter-spacing:-.03em;white-space:nowrap}
+.lg-a{color:#0071E3}.lg-b{color:#34AADC}
+</style>
 </head>
 <body>
 <div id="sd-splash" aria-hidden="true"><div class="sd-sw"><span class="sd-p sd-p1">Smart</span><span class="sd-p sd-p2">BI</span><span class="sd-ln"></span></div><div class="sd-tag">SmartDent</div></div>
@@ -180,8 +185,8 @@ body {
 #sd-splash.sd-dark{background:#111214}
 #sd-splash .sd-sw{position:relative;font-size:44px;font-weight:700;letter-spacing:-.035em;line-height:1.1;white-space:nowrap}
 #sd-splash .sd-p{display:inline-block;opacity:0}
-#sd-splash .sd-p1{color:#2885F0;--sd-c:#2885F0}#sd-splash .sd-p2{color:#57CEF9;--sd-c:#57CEF9}
-#sd-splash .sd-ln{position:absolute;left:0;right:0;bottom:-.18em;height:4px;border-radius:2px;background:#2885F0;transform:scaleX(0);opacity:0}
+#sd-splash .sd-p1{color:#0071E3;--sd-c:#0071E3}#sd-splash .sd-p2{color:#34AADC;--sd-c:#34AADC}
+#sd-splash .sd-ln{position:absolute;left:0;right:0;bottom:-.18em;height:4px;border-radius:2px;background:#0071E3;transform:scaleX(0);opacity:0}
 #sd-splash .sd-tag{margin-top:20px;font-size:14px;font-weight:500;color:#6e6e73;opacity:0}
 #sd-splash.sd-dark .sd-tag{color:#a1a1a6}
 #sd-splash.sd-run .sd-p{background:linear-gradient(100deg,var(--sd-c) 42%,#fff 50%,var(--sd-c) 58%) 120% 0/300% 100%;
@@ -235,7 +240,7 @@ body {
           </svg>
         </div>
         <div>
-          <div class="sb-appname">SmartBI</div>
+          <div class="sb-appname"><span class="lg-a">Smart</span><span class="lg-b">BI</span></div>
           <div class="sb-apptag">Dashboard ejecutivo</div>
         </div>
       </div>
