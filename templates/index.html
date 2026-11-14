@@ -206,7 +206,9 @@ body {
 </style>
 <script>(function(){
   var s=document.getElementById('sd-splash');if(!s)return;
-  var visto=false;try{visto=!!sessionStorage.getItem('sd-splash');sessionStorage.setItem('sd-splash','1');}catch(e){}
+  /* Sale cada vez que se entra a la app (desde el Portal, un enlace o un marcador);
+     no al recargar, al volver atras ni al moverse dentro de la misma app. */
+  var visto=false;try{var nv=(performance.getEntriesByType('navigation')[0]||{}).type;var ref=document.referrer?new URL(document.referrer).origin:'';visto=(nv&&nv!=='navigate')||ref===location.origin;}catch(e){}
   var quieto=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(visto||quieto){s.remove();return;}
   if(document.documentElement.getAttribute('data-theme')==='dark')s.classList.add('sd-dark');
