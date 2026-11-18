@@ -476,5 +476,32 @@ setInterval(() => {
   if (document.visibilityState === 'visible' && Date.now() - _ultimaSenal < TOPE_A_LA_VISTA) resetTimer();
 }, 30 * 1000);
 </script>
+<style>
+/* Boton "Mis apps" para volver al Portal (mismo aspecto que en SmartPanel) */
+.sd-volver{display:inline-flex;align-items:center;gap:6px;height:34px;margin-top:12px;padding:0 12px 0 9px;
+  border-radius:10px;border:1px solid rgba(127,127,127,.32);background:rgba(127,127,127,.06);
+  color:inherit;font:inherit;font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;
+  transition:background .15s ease,border-color .15s ease}
+.sd-volver:hover{background:rgba(127,127,127,.14);border-color:rgba(127,127,127,.45)}
+.sd-volver:focus-visible{outline:2px solid #2885F0;outline-offset:2px}
+.sd-volver svg{flex-shrink:0}
+.sd-volver-caja{padding:10px 12px 4px}
+</style>
+<script>(function(){
+  var URL_PORTAL = 'https://smartapps-production.up.railway.app';
+  var cab = document.querySelector('.sb .sb-top');
+  if (!cab || document.querySelector('.sd-volver')) return;
+  var a = document.createElement('a');
+  a.className = 'sd-volver'; a.href = URL_PORTAL; a.setAttribute('aria-label', 'Volver a mis apps');
+  a.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg><span>Mis apps</span>';
+  cab.appendChild(a);
+  /* Quitar el enlace chico de abajo para que no haya dos */
+  var menu = cab.closest('.sb') || document;
+  menu.querySelectorAll('a,button,div').forEach(function(el){
+    if (el === a || el.contains(a) || el.children.length > 2) return;
+    var t = (el.textContent || '').replace(/\s+/g, ' ').trim();
+    if (/^(← ?)?(Volver a SmartApps|SmartApps)$/.test(t)) el.style.display = 'none';
+  });
+})();</script>
 </body>
 </html>
