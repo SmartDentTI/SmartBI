@@ -58,7 +58,7 @@ def login():
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect(PORTAL_URL)
+    return redirect(PORTAL_URL.rstrip("/") + "/logout")  # cierra tambien la sesion del Portal
 
 REPORTES = [
     {
